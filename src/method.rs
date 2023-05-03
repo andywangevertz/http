@@ -61,6 +61,19 @@ enum Inner {
     Trace,
     Connect,
     Patch,
+    Invite,
+    Ack,
+    Bye,
+    Cancel,
+    Register,
+    Prack,
+    Subscribe,
+    Notify,
+    Publish,
+    Info,
+    Refer,
+    Message,
+    Update,
     // If the extension is short enough, store it inline
     ExtensionInline(InlineExtension),
     // Otherwise, allocate it
@@ -96,6 +109,45 @@ impl Method {
     /// TRACE
     pub const TRACE: Method = Method(Trace);
 
+    /// INVITE
+    pub const INVITE: Method = Method(Invite);
+
+    /// ACK
+    pub const ACK: Method = Method(Ack);
+
+    /// BYE
+    pub const BYE: Method = Method(Bye);
+
+    /// CANCEL
+    pub const CANCEL: Method = Method(Cancel);
+
+    /// REGISTER
+    pub const REGISTER: Method = Method(Register);
+
+    /// PRACK
+    pub const PRACK: Method = Method(Prack);
+
+    /// SUBSCRIBE
+    pub const SUBSCRIBE: Method = Method(Subscribe);
+
+    /// NOTIFY
+    pub const NOTIFY: Method = Method(Notify);
+
+    /// PUBLISH
+    pub const PUBLISH: Method = Method(Publish);
+
+    /// INFO
+    pub const INFO: Method = Method(Info);
+
+    /// REFER
+    pub const REFER: Method = Method(Refer);
+
+    /// MESSAGE
+    pub const MESSAGE: Method = Method(Message);
+
+    /// UPDATE
+    pub const UPDATE: Method = Method(Update);
+
     /// Converts a slice of bytes to an HTTP method.
     pub fn from_bytes(src: &[u8]) -> Result<Method, InvalidMethod> {
         match src.len() {
@@ -103,25 +155,44 @@ impl Method {
             3 => match src {
                 b"GET" => Ok(Method(Get)),
                 b"PUT" => Ok(Method(Put)),
+                b"ACK" => Ok(Method(Ack)),
+                b"BYE" => Ok(Method(Bye)),
                 _ => Method::extension_inline(src),
             },
             4 => match src {
                 b"POST" => Ok(Method(Post)),
                 b"HEAD" => Ok(Method(Head)),
+                b"INFO" => Ok(Method(Info)),
                 _ => Method::extension_inline(src),
             },
             5 => match src {
                 b"PATCH" => Ok(Method(Patch)),
                 b"TRACE" => Ok(Method(Trace)),
+                b"PRACK" => Ok(Method(Prack)),
+                b"REFER" => Ok(Method(Refer)),
                 _ => Method::extension_inline(src),
             },
             6 => match src {
                 b"DELETE" => Ok(Method(Delete)),
+                b"INVITE" => Ok(Method(Invite)),
+                b"CANCEL" => Ok(Method(Cancel)),
+                b"NOTIFY" => Ok(Method(Notify)),
+                b"UPDATE" => Ok(Method(Update)),
                 _ => Method::extension_inline(src),
             },
             7 => match src {
                 b"OPTIONS" => Ok(Method(Options)),
                 b"CONNECT" => Ok(Method(Connect)),
+                b"PUBLISH" => Ok(Method(Publish)),
+                b"MESSAGE" => Ok(Method(Message)),
+                _ => Method::extension_inline(src),
+            },
+            8 => match src {
+                b"REGISTER" => Ok(Method(Register)),
+                _ => Method::extension_inline(src),
+            },
+            9 => match src {
+                b"SUBSCRIBE" => Ok(Method(Subscribe)),
                 _ => Method::extension_inline(src),
             },
             _ => {
@@ -179,6 +250,19 @@ impl Method {
             Trace => "TRACE",
             Connect => "CONNECT",
             Patch => "PATCH",
+            Invite => "INVITE",
+            Ack => "ACK",
+            Bye => "BYE",
+            Cancel => "CANCEL",
+            Register => "REGISTER",
+            Prack => "PRACK",
+            Subscribe => "SUBSCRIBE",
+            Notify => "NOTIFY",
+            Publish => "PUBLISH",
+            Info => "INFO",
+            Refer => "REFER",
+            Message => "MESSAGE",
+            Update => "UPDATE",
             ExtensionInline(ref inline) => inline.as_str(),
             ExtensionAllocated(ref allocated) => allocated.as_str(),
         }
@@ -438,6 +522,14 @@ mod test {
 
         assert_eq!(&Method::GET, Method::GET);
         assert_eq!(Method::GET, &Method::GET);
+    }
+
+    #[test]
+    fn test_sip_method() {
+        assert_eq!(Method::INVITE, "INVITE");
+        assert_eq!("SUBSCRIBE", &Method::SUBSCRIBE);
+        assert_eq!(Method::UPDATE, &Method::UPDATE);
+        assert_eq!(&Method::BYE, "BYE");
     }
 
     #[test]

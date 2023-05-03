@@ -984,6 +984,37 @@ standard_headers! {
     /// inline JavaScript ('unsafe-inline'), they can still provide protections
     /// for users of older web browsers that don't yet support CSP.
     (XXssProtection, X_XSS_PROTECTION, b"x-xss-protection");
+
+    /// for SIP TO
+    (To, TO, b"to");
+
+    /// for SIP CSEQ
+    (CSeq, CSEQ, b"cseq");
+
+    /// for SIP CALL_ID
+    (CallID, CALL_ID, b"call-id");
+
+    /// for SIP CONTACT
+    (Contact, CONTACT, b"contact");
+
+    /// for SIP SUPPORTED
+    (Supported, SUPPORTED, b"supported");
+
+    /// for SIP P_ASSERTED_IDENTIFY
+    (PAssertedIdentify, P_ASSERTED_IDENTIFY, b"p-asserted-identify");
+
+    /// for SIP ROUTE
+    (Route, ROUTE, b"route");
+
+    /// for SIP PATH
+    (Path, PATH, b"path");
+
+    /// for SIP ALERT_INFO
+    (AlertInfo, ALERT_INFO, b"alert-info");
+
+    /// for SIP X_BREAKAWAYROUTING
+    (XbreakAwayRouting, X_BREAKAWAYROUTING, b"x-breakawayrouting");
+    // for SIP done
 }
 
 /// Valid header name characters
@@ -1739,7 +1770,26 @@ mod tests {
 
         assert_eq!(name.inner, Repr::Custom(Custom(ByteStr::from_static("hello-world"))));
     }
+    #[test]
+    fn test_sip_hdr_name() {
+        use self::StandardHeader::To;
+        let name = HeaderName::from(HdrName {
+            inner: Repr::Standard(To),
+        });
+        assert_eq!(name.inner, Repr::Standard(To));
 
+        //(CallID, CALL_ID, b"call-id");
+        use self::StandardHeader::CallID;
+        let a = HeaderName { inner: Repr::Standard(CallID) };
+        let b = HeaderName::from_static("call-id");
+        assert_eq!(a, b);
+
+        //(XbreakAwayRouting, X_BREAKAWAYROUTING, b"x-breakawayrouting");
+        use self::StandardHeader::XbreakAwayRouting;
+        let a = HeaderName { inner: Repr::Standard(XbreakAwayRouting) };
+        let b = HeaderName::from_static("x-breakawayrouting");
+        assert_eq!(a, b);
+    }
     #[test]
     fn test_eq_hdr_name() {
         use self::StandardHeader::Vary;

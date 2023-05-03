@@ -164,6 +164,16 @@ pub use self::name::{
     X_DNS_PREFETCH_CONTROL,
     X_FRAME_OPTIONS,
     X_XSS_PROTECTION,
+    TO,
+    CSEQ,
+    CALL_ID,
+    CONTACT,
+    SUPPORTED,
+    P_ASSERTED_IDENTIFY,
+    ROUTE,
+    PATH,
+    ALERT_INFO,
+    X_BREAKAWAYROUTING,
 };
 
 /// Maximum length of a header name
