@@ -195,6 +195,16 @@ impl Authority {
     pub fn host(&self) -> &str {
         host(self.as_str())
     }
+    /// Get the host of this `Authority`.
+    /// abc://username:password@example.com:123/path/data?key=value&key2=value2#fragid1
+    ///       |---------------|
+    ///              |
+    ///       userinfo (user,pass)
+    // return username, password
+    #[inline] 
+    pub fn userinfo(&self) -> (&str, &str) {
+        userinfo(self.as_str())
+    } 
 
     /// Get the port part of this `Authority`.
     ///
@@ -498,6 +508,16 @@ fn host(auth: &str) -> &str {
             .next()
             .expect("split always has at least 1 item")
     }
+}
+ 
+fn userinfo(auth: &str) -> (&str, &str) {
+  // abd://user:pass@host:port
+  let parts = auth.splitn(2, "@").next().unwrap();
+  //println!("{:#?}", parts);
+  if parts == auth { return ("", ""); }
+  let userpass = parts.rsplitn(2, "//").next().unwrap();
+  let mut userpass = userpass.splitn(2, ":");
+  (userpass.next().unwrap(), userpass.next().unwrap())
 }
 
 // Precondition: f converts all of the bytes in the passed in B into the
