@@ -693,6 +693,15 @@ impl<T> Request<T> {
             head: self.head,
         }
     }
+
+   /// serialized to String so that it could be sent out
+   pub fn to_string(self) -> String {
+       let mut req_lines = format!("{} {} {:?}\r\n", self.method(), self.uri(), self.version());
+       for (key, value) in self.headers().iter() {
+            req_lines.push_str(&format!("{}: {}\r\n", key, value.to_str().unwrap()));
+       }
+       req_lines
+   }
 }
 
 impl<T: Default> Default for Request<T> {
